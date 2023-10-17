@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API-pagination</title>
+    <style>
+        body {
+            width: 100%;
+            background-color: rgb(11, 11, 11);
+            overflow-x: hidden;
+            color: white;
+        }
+
+        ul {
+            display: flex;
+            margin-left: 250px;
+            margin-top: 50px;
+        }
+
+        #pages>li {
+            list-style-type: none;
+            border: 1px solid rgb(46, 45, 45);
+            border-radius: 20px;
+            display: flex;
+            width: 50px;
+            height: 50px;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            margin: 10px;
+            color: rgb(235, 9, 9);
+            text-shadow: 1px 1px black,
+                -1px -1px black;
+            background: #272727;
+            box-shadow: 1px 1px 10px rgb(203, 170, 170);
+            font-size: 25px;
+
+            &:hover {
+                background-color: azure;
+            }
+        }
+
+        figure {
+            padding-left: 140px;
+
+            >img {
+                border-radius: 50%;
+            }
+
+        }
+
+        h2,
+        h3 {
+            padding-left: 120px;
+        }
+
+        h4 {
+            border-bottom: 3px solid rgb(106, 37, 37);
+            padding-bottom: 50px;
+            padding-left: 120px;
+        }
+
+        span {
+
+            font-size: 20px;
+            padding-left: 120px;
+            /* border: 1px solid red; */
+
+
+
+        }
+
+        p {
+            font-size: 25px;
+            padding-left: 120px;
+
+
+        }
+
+        #row {
+            width: 600px;
+            /* border: 1px solid red; */
+            margin: 100px auto;
+            padding-left: 50px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="pages">
+    </ul>
+    <div id="row"></div>
+
+
+    <script>
+        "use strict";
+        let page = 1
+        let count = 50
+        count = count / 5
+        for (let i = 0; i < count; i++) {
+            document.getElementById('pages').innerHTML += '<li>' + (i + 1) + '</li>'
+        }
+
+
+        const _li = document.querySelectorAll('ul>li')
+        _li.forEach((item) => {
+            item.addEventListener('click', () => {
+                page = item.innerText
+                _write()
+            })
+        })
+        _write()
+
+        function _write() {
+            document.getElementById('row').innerHTML = ''
+            const url = new URL('https://65296f3c55b137ddc83ed17e.mockapi.io/api/Neginkashani/reg');
+            url.searchParams.append('completed', false);
+            url.searchParams.append('page', page);
+            url.searchParams.append('limit', 5);
+
+            fetch(url, {
+                method: 'GET',
+                headers: { 'content-type': 'application/json' },
+            }).then(res => {
+                if (res.ok) {
+                    return res.json();
+                }
+                // handle error
+            }).then(tasks => {
+                tasks.map((val) => {
+                    document.getElementById('row').innerHTML += `
+                <figure><img  src='${val.image}' /></figure> 
+                <span>Job-Title: ${val.job}</span>
+                <p>Job-Description: ${val.jobArea}</p>
+                <h2>Name: ${val.firstName} ${val.lastName}</h2>
+                <h3>Phonenumber: ${val.phoneNumber}</h3>
+                <h4>Email:<a href="" _blank>${val.email}</a></h4> 
+            `
+
+                })
+            }).catch(error => {
+                // handle error
+            })
+        }
+    </script>
+
+
+</body>
+
+</html>
